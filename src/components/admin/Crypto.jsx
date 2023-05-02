@@ -3,24 +3,44 @@ import { Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 import MUIDataTable from 'mui-datatables';
 import Topbar from '../site/Topbar';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { useCookies } from 'react-cookie';
 
 
 const Crypto = () => {
 
+    const location = useLocation();
+    // console.log(location)
+    window.history.replaceState({}, document.title)
+    if(location.state !== null){
+        toast.success("Berhasil")
+    }
+
+    const [cookies] = useCookies(['user'])
+
     const [data, setData] = useState([]);
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = () => {
-            axios.get('https://dummyjson.com/products').then(res => {
-                const rs = res.data.products.map(item =>
-                    [item.id, item.title, item.price, '']
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${cookies.session}`
+                },
+            }
+            axios.get('http://localhost:9100/crypto', config).then(res => {
+                const rs = res.data.map(item =>
+                    [item.id, item.nama_crypto, item.jumlah, item.harga, '']
                 )
+                console.log(res)
                 setData(rs)
             })
         }
         fetchData();
-    }, []);
+    }, [cookies.session]);
 
     const columns = [
         {
@@ -30,10 +50,13 @@ const Crypto = () => {
             }
         },
         {
-            name: "Name",
+            name: "Nama Crypto",
         },
         {
-            name: "Price",
+            name: "Jumlah",
+        },
+        {
+            name: "Harga",
             options: {
                 customBodyRender: (value, meta, updValue) => {
                     return `Rp ${value}`
@@ -46,8 +69,8 @@ const Crypto = () => {
                 customBodyRender: (value, meta) => {
                     return <Button
                         className="btn btn-primary btn-sm mb-3"
-                        onClick={() => { console.log(meta); console.log(`id ${meta.rowData[0]}`) }}
-                    >Ok</Button>
+                        onClick={() => { navigate(`/admin/edit/${meta.rowData[0]}`) }}
+                    >Edit</Button>
                 }
             }
         }
@@ -70,6 +93,7 @@ const Crypto = () => {
                     options={options}
                 />
             </Container>
+            <ToastContainer/>
         </>
     )
 }

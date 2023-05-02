@@ -2,13 +2,15 @@ import axios from 'axios';
 import React from 'react';
 import { useState } from 'react';
 import { useCookies } from "react-cookie";
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children }) => {
 
     const [cookies] = useCookies(['user'])
     const [isLoadng, setIsLoading] = useState(true)
     const [isValid, setIsValid] = useState(false)
+    const location = useLocation()
+    const navigate = useNavigate()
 
     if (cookies.session) {
         // console.log(cookies.session)
@@ -21,10 +23,12 @@ const PrivateRoute = ({ children }) => {
         };
         axios.post(url, {}, config).then(response => {
             const roles = response.data.role.map(r => r.authority)
-            if(roles.includes('admin')){
-                console.log('admin')
+            if(location.pathname.includes("admin")){
+                if(!roles.includes('admin')){
+                    navigate('/')
+                }
+                // console.log(roles)
             }
-            // console.log(roles)
             setIsValid(response.data.isValid)
             setIsLoading(false)
         })

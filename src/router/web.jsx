@@ -8,6 +8,7 @@ import Logout from "../components/auth/Logout";
 import Crypto from "../components/admin/Crypto";
 import AddCrypto from "../components/admin/AddCrypto";
 import Saldo from "../components/site/Saldo";
+import EditCrypto from "../components/admin/EditCrypto";
 
 const router = createBrowserRouter([
     {
@@ -28,11 +29,15 @@ const router = createBrowserRouter([
     },
     {
         path: '/admin',
-        element: <Crypto />
+        element: <PrivateRoute><Crypto/> </PrivateRoute>
     },
     {
         path:'/admin/add',
-        element: <AddCrypto/>
+        element: <PrivateRoute><AddCrypto/></PrivateRoute>
+    },
+    {
+        path:'/admin/edit/:id',
+        element: <PrivateRoute><EditCrypto/></PrivateRoute>
     },
     {
         path:'/saldo',

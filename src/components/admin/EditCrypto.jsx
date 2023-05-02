@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Topbar from '../site/Topbar';
 import * as yup from "yup";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useCookies } from 'react-cookie';
 
 
-const AddCrypto = () => {
+const EditCrypto = () => {
 
     const schema = yup.object({
         nama: yup.string().required(),
@@ -25,6 +26,9 @@ const AddCrypto = () => {
     const navigate = useNavigate()
 
     const [submit, setSubmit] = useState(false);
+    const [, setLoad] = useState(true);
+    const params = useParams()
+    // console.log(params)
 
     const {
         handleSubmit,
@@ -34,9 +38,9 @@ const AddCrypto = () => {
         errors
     } = useFormik({
         initialValues: {
-            nama: '',
+            nama: '' ,
             jumlah: '',
-            harga: ''
+            harga: '',
         },
         validationSchema: schema,
         onSubmit: values => {
@@ -60,11 +64,32 @@ const AddCrypto = () => {
                     navigate('/admin', { replace: true, state: 'success_add' })
                 }else{
                     setSubmit(false)
-                    toast.error(`Gagal tambah data dikarenakan ${response.data.message}`)
+                    toast.error(`Gagal edit data dikarenakan ${response.data.message}`)
                 }
             })
         }
     })
+
+    useEffect(() => {
+        const fetchData = () => {
+            const url = `http://localhost:9100/crypto/${params.id}`;
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${cookies.session}`
+                },
+            };
+            axios.get(url, config).then(res => {
+                // console.log(res.data)
+                values.nama = res.data.nama_crypto
+                values.harga = res.data.harga
+                values.jumlah = res.data.jumlah
+                setLoad(false)
+            })
+        }
+        fetchData();
+    }, [cookies.session, params])
+
 
     return (
         <>
@@ -72,7 +97,7 @@ const AddCrypto = () => {
             <Container className='mt-4'>
             <Card>
                 <Card.Header className="text-center">
-                    <h3>Tambah Crypto</h3>
+                    <h3>Edit Crypto</h3>
                 </Card.Header>
                 <Card.Body>
                     <Form method="POST" onSubmit={handleSubmit} noValidate>
@@ -130,4 +155,4 @@ const AddCrypto = () => {
     )
 }
 
-export default AddCrypto;
+export default EditCrypto;
