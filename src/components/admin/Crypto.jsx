@@ -6,22 +6,29 @@ import Topbar from '../site/Topbar';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCookies } from 'react-cookie';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 
 const Crypto = () => {
 
     const location = useLocation();
-    // console.log(location)
+    // console.log(location.state)
     window.history.replaceState({}, document.title)
-    if(location.state !== null){
-        toast.success("Berhasil")
-    }
+    
+
+    useEffect(() => {
+        if(location.state !== null){
+            toast.success("Berhasil")
+        }
+    },[location.state])
 
     const [cookies] = useCookies(['user'])
 
     const [data, setData] = useState([]);
 
     const navigate = useNavigate()
+    const [submit, setSubmit] = useState(false);
 
     useEffect(() => {
         const fetchData = () => {
@@ -40,7 +47,25 @@ const Crypto = () => {
             })
         }
         fetchData();
-    }, [cookies.session]);
+    }, [cookies.session, submit]);
+
+    const deleteData = (id) => {
+        setSubmit(true)
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${cookies.session}`
+            },
+        }
+        const url = `http://localhost:9100/crypto/delete/${id}`
+        axios.post(url, {}, config).then(res => {
+            // console.log(res)
+            if(res.data.status === 'success'){
+                toast.success("Berhasil hapus data")
+                setSubmit(false)
+            }
+        })
+    }
 
     const columns = [
         {
@@ -67,10 +92,23 @@ const Crypto = () => {
             name: 'Action',
             options: {
                 customBodyRender: (value, meta) => {
-                    return <Button
-                        className="btn btn-primary btn-sm mb-3"
-                        onClick={() => { navigate(`/admin/edit/${meta.rowData[0]}`) }}
-                    >Edit</Button>
+                    return (
+                        <>
+                            <Button
+                                className="btn btn-primary btn-sm" style={{marginRight: "5px"}}
+                                onClick={() => { navigate(`/admin/edit/${meta.rowData[0]}`); } }
+                            >Edit</Button>
+                            <Button 
+                                disabled={submit} 
+                                className="btn-sm" 
+                                variant="danger"
+                                onClick={() => { deleteData(meta.rowData[0]) } }>
+                            {submit ? (
+                                <><FontAwesomeIcon icon={faSpinner} className="fa-spin"></FontAwesomeIcon> Proses</>
+                            ) : 'Hapus'}
+                            </Button>
+                        </>
+                    )
                 }
             }
         }

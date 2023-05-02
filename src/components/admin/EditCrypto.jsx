@@ -57,7 +57,7 @@ const EditCrypto = () => {
                 "jumlah": values.jumlah,
                 "harga": values.harga,
             }
-            const url = "http://localhost:9100/crypto"
+            const url = `http://localhost:9100/crypto/edit/${params.id}`
             axios.post(url, data, config).then(response => {
                 console.log(response)
                 if(response.data.status === 'success'){
