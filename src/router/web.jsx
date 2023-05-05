@@ -9,6 +9,7 @@ import Crypto from "../components/admin/Crypto";
 import AddCrypto from "../components/admin/AddCrypto";
 import Saldo from "../components/site/Saldo";
 import EditCrypto from "../components/admin/EditCrypto";
+import Portofolio from "../components/site/Portofolio";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
     {
         path:'/saldo',
         element: <PrivateRoute><Saldo/></PrivateRoute>
+    },
+    {
+        path:'/portofolio',
+        element: <PrivateRoute><Portofolio/></PrivateRoute>
     }
     // {
     //     path: '/',

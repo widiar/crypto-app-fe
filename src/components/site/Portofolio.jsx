@@ -10,10 +10,13 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 
-const Home = () => {
+const Portofolio = () => {
 
     const [data, setData] = useState([])
-    const [saldo, setSaldo] = useState(0)
+    const [cryp, setCryp] = useState([])
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const [cookies] = useCookies(['user'])
 
@@ -25,33 +28,21 @@ const Home = () => {
                     "Authorization": `Basic ${cookies.session}`
                 },
             }
-            axios.get('http://localhost:9100/crypto', config).then(res => {
-                // const rs = res.data.map(item => 
-                //     [{
-                //         id: item.id,
-                //         nama: item.nama_crypto,
-                //         harga: item.harga
-                //     }]
-                // )
-                // console.log(rs)
+            axios.get('http://localhost:9100/trade/cryp', config).then(res => {
                 setData(res.data)
             })
-            axios.get("http://localhost:9100/saldo", config).then(res => {
-                // console.log(res.data)
-                setSaldo(res.data.total_saldo)
+            axios.get('http://localhost:9100/crypto', config).then(res => {
+                setCryp(res.data)
             })
         }
         fetchData();
-    }, [cookies.session]);
+    }, [cookies.session, show]);
 
     const schema = yup.object({
         jumlah: yup.number().required()
     })
 
     const [submit, setSubmit] = useState(false);
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
     const [crypto, setCrypto] = useState();
 
     const {
@@ -76,16 +67,15 @@ const Home = () => {
             }
             const data = {
                 "nama_crypto": crypto.nama_crypto,
-                "harga": crypto.harga,
                 "jumlah": values.jumlah,
             }
-            const url = `http://localhost:9100/trade/buy/${crypto.id}`
+            const url = `http://localhost:9100/trade/sell/${crypto.id}`
             axios.post(url, data, config).then(response => {
                 // console.log(response)
                 if(response.data.status === 'success'){
-                    toast.success("Berhasil beli crypto")
+                    toast.success("Berhasil jual crypto")
                 }else{
-                    toast.warning("Saldo tidak cukup")
+                    toast.warning(response.data.message)
                 }
                 handleClose()
                 setSubmit(false)
@@ -94,19 +84,27 @@ const Home = () => {
         }
     })
 
-    const [total, setTotal] = useState(0)
+    // const [total, setTotal] = useState(0)
+    const [hargaBuy, setHargaBuy] = useState(0)
+    const [keuntungan, setKeuntungan] = useState(0)
 
-    useEffect(() => {
-        let harga = 0;
-        if (crypto !== undefined) harga = crypto.harga;
-        let total = harga * values.jumlah;
-        setTotal(total)
-    }, [values.jumlah, crypto])
+    // useEffect(() => {
+    //     let harga = 0;
+    //     if (crypto !== undefined) harga = crypto.harga;
+    //     let total = harga * values.jumlah;
+    //     setTotal(total)
+    // }, [values.jumlah, crypto])
 
     const handleClick = (data) => {
-        // console.log(data)
+        // console.log(cryp)
         values.jumlah = ''
         setCrypto(data)
+        // console.log(data.id)
+        let harga = cryp.find(x => x.nama_crypto === data.nama_crypto).harga
+        let keuntungan = data.harga - harga
+        setKeuntungan(keuntungan)
+        setHargaBuy(harga)
+        // console.log(hargaBuy)
         handleShow()
     }
 
@@ -115,7 +113,7 @@ const Home = () => {
         <>
             <Topbar />
             <Container className='mt-4'>
-                <h2 className='mb-3'>Jual Beli Crypto</h2>
+            <h2 className='mb-3'>Portofolio</h2>
                 <Row>
                     {data.map(dt => {
                         return (
@@ -125,7 +123,8 @@ const Home = () => {
                                     harga={dt.harga}
                                     id={dt.id}
                                     handleClick={() => handleClick(dt)}
-                                    text="Beli"
+                                    text="Jual"
+                                    total={dt.jumlah}
                                 />
                             </Col>
 
@@ -134,7 +133,7 @@ const Home = () => {
                 </Row>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                    <Modal.Title>Beli Crytp {crypto == null ? '' :crypto.nama_crypto}</Modal.Title>
+                    <Modal.Title>Jual Crypto {crypto == null ? '' :crypto.nama_crypto}</Modal.Title>
                     </Modal.Header>
                     <Form method="POST" onSubmit={handleSubmit} noValidate>
                     <Modal.Body>
@@ -151,8 +150,9 @@ const Home = () => {
                                 />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
-                        <h4>Total Saldo: Rp {saldo}</h4>
-                        <h4>Total Beli Rp {total}</h4>
+                        <h4>Harga saat ini: Rp {hargaBuy}</h4>
+                        <h4>Harga Beli: {crypto == null ? '' : crypto.harga}</h4>
+                        <h4>Keuntungan: Rp {keuntungan}</h4>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -160,7 +160,7 @@ const Home = () => {
                     </Button>
                     <Button disabled={submit} variant="primary" type="submit">{submit ? (
                             <><FontAwesomeIcon icon={faSpinner} className="fa-spin"></FontAwesomeIcon> Proses</>
-                        ) : 'Save'}</Button>
+                        ) : 'Jual'}</Button>
                     </Modal.Footer>
                     </Form>
                 </Modal>
@@ -170,4 +170,4 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default Portofolio;

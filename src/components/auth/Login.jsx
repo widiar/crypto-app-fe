@@ -53,16 +53,19 @@ const Login = () => {
             }
             const url = "http://localhost:9100/auth/login"
             axios.post(url, data, config).then(response => {
-                console.log(response)
+                // console.log(response)
                 let expire = new Date();
-                expire.setTime(expire.getTime() + 60 * 5000) //5000 -> 2 detik
+                expire.setTime(expire.getTime() + 60 * 1000 * 59) //59 -> 59 menit
                 if (response.status === 200) {
-                    setCookies("session", response.data, { path: '/', expires: expire })
+                    setCookies("session", response.data.session, { path: '/', expires: expire })
+                    if(response.data.role === 'admin')
+                    navigate('/admin')
+                    else
                     navigate('/')
                 }
             }).catch(error => {
-                console.log(error)
-                setMessage(error.response.data)
+                // console.log(error)
+                setMessage(error.response.data.session)
                 setSubmit(false)
             })
         }

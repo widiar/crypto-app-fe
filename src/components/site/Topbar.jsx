@@ -14,6 +14,7 @@ const Topbar = () => {
                     <Nav className="me-auto">
                         <Nav.Link href='/'>Home</Nav.Link>
                         <Nav.Link href='/saldo'>Saldo</Nav.Link>
+                        <Nav.Link href='/portofolio'>Portofolio</Nav.Link>
                         {cookies.session === null ? <Nav.Link href='/login'>Login</Nav.Link> : <Nav.Link href='/logout'>Logout</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
