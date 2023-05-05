@@ -102,7 +102,7 @@ const Portofolio = () => {
         setCrypto(data)
         // console.log(data.id)
         let harga = cryp.find(x => x.nama_crypto === data.nama_crypto).harga
-        let keuntungan = data.harga - harga
+        let keuntungan = harga - data.harga
         setKeuntungan(keuntungan)
         setHargaBuy(harga)
         // console.log(hargaBuy)
