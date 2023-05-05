@@ -9,6 +9,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
+import { NumericFormat } from 'react-number-format';
 
 const Home = () => {
 
@@ -151,8 +152,8 @@ const Home = () => {
                                 />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
-                        <h4>Total Saldo: Rp {saldo}</h4>
-                        <h4>Total Beli Rp {total}</h4>
+                        <h4>Total Saldo: Rp <NumericFormat value={saldo} thousandSeparator="," displayType='text' /></h4>
+                        <h4>Total Beli Rp <NumericFormat value={total} thousandSeparator="," displayType='text' /></h4>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

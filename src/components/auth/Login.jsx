@@ -93,6 +93,7 @@ const Login = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.username}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                         </Form.Group>
@@ -106,6 +107,7 @@ const Login = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.password}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                         </Form.Group>

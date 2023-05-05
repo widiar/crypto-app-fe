@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCookies } from 'react-cookie';
+import { NumericFormat } from 'react-number-format';
 
 
 const EditCrypto = () => {
@@ -18,7 +19,7 @@ const EditCrypto = () => {
     const schema = yup.object({
         nama: yup.string().required(),
         jumlah: yup.number().required(),
-        harga: yup.number().required()
+        harga: yup.string().required()
     })
 
     const [cookies] = useCookies(['user'])
@@ -55,9 +56,11 @@ const EditCrypto = () => {
             const data = {
                 "nama_crypto": values.nama,
                 "jumlah": values.jumlah,
-                "harga": values.harga,
+                // "harga": values.harga
+                "harga": values.harga.toString().split(',').join(''),
             }
             const url = `http://localhost:9100/crypto/edit/${params.id}`
+            console.log(data)
             axios.post(url, data, config).then(response => {
                 console.log(response)
                 if(response.data.status === 'success'){
@@ -111,6 +114,7 @@ const EditCrypto = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.nama}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.nama}</Form.Control.Feedback>
                         </Form.Group>
@@ -124,12 +128,13 @@ const EditCrypto = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.jumlah}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Harga</Form.Label>
-                            <Form.Control
+                            {/* <Form.Control
                                 type="text"
                                 name="harga"
                                 value={values.harga}
@@ -137,6 +142,17 @@ const EditCrypto = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.harga}
+                            /> */}
+                            <NumericFormat
+                                value={values.harga}
+                                name='harga'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                onSubmit={handleSubmit}
+                                isInvalid={!!errors.harga}
+                                customInput={Form.Control}
+                                thousandSeparator=','
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.harga}</Form.Control.Feedback>
                         </Form.Group>

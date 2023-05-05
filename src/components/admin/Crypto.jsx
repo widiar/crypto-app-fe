@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { NumericFormat } from 'react-number-format';
 
 
 const Crypto = () => {
@@ -84,7 +85,7 @@ const Crypto = () => {
             name: "Harga",
             options: {
                 customBodyRender: (value, meta, updValue) => {
-                    return `Rp ${value}`
+                    return <NumericFormat value={value} thousandSeparator="," displayType='text' prefix='Rp ' />
                 }
             }
         },

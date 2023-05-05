@@ -9,6 +9,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
+import { NumericFormat } from 'react-number-format';
 
 const Portofolio = () => {
 
@@ -147,12 +148,13 @@ const Portofolio = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.jumlah}
+                                autoComplete='off'
                                 />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
-                        <h4>Harga saat ini: Rp {hargaBuy}</h4>
-                        <h4>Harga Beli: {crypto == null ? '' : crypto.harga}</h4>
-                        <h4>Keuntungan: Rp {keuntungan}</h4>
+                        <h4>Harga saat ini: Rp <NumericFormat value={hargaBuy} thousandSeparator="," displayType='text' /></h4>
+                        <h4>Harga Beli: Rp {crypto == null ? 0 : <NumericFormat value={crypto.harga} thousandSeparator="," displayType='text' />}</h4>
+                        <h4>Keuntungan: Rp <NumericFormat value={keuntungan} thousandSeparator="," displayType='text' /></h4>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

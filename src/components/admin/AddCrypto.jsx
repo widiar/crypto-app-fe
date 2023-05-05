@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCookies } from 'react-cookie';
+import { NumericFormat } from 'react-number-format';
 
 
 const AddCrypto = () => {
@@ -17,7 +18,7 @@ const AddCrypto = () => {
     const schema = yup.object({
         nama: yup.string().required(),
         jumlah: yup.number().required(),
-        harga: yup.number().required()
+        harga: yup.string().required()
     })
 
     const [cookies] = useCookies(['user'])
@@ -51,7 +52,7 @@ const AddCrypto = () => {
             const data = {
                 "nama_crypto": values.nama,
                 "jumlah": values.jumlah,
-                "harga": values.harga,
+                "harga": parseFloat(values.harga.split(',').join('')),
             }
             const url = "http://localhost:9100/crypto"
             axios.post(url, data, config).then(response => {
@@ -86,6 +87,7 @@ const AddCrypto = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.nama}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.nama}</Form.Control.Feedback>
                         </Form.Group>
@@ -99,19 +101,22 @@ const AddCrypto = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.jumlah}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Harga</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="harga"
+                            <NumericFormat
                                 value={values.harga}
+                                name='harga'
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.harga}
+                                customInput={Form.Control}
+                                thousandSeparator=','
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.harga}</Form.Control.Feedback>
                         </Form.Group>

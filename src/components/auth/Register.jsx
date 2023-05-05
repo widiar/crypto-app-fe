@@ -77,6 +77,7 @@ const Register = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.email}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                         </Form.Group>
@@ -90,6 +91,7 @@ const Register = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.nama}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.nama}</Form.Control.Feedback>
                         </Form.Group>
@@ -103,6 +105,7 @@ const Register = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.username}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                         </Form.Group>
@@ -116,6 +119,7 @@ const Register = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.password}
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                         </Form.Group>

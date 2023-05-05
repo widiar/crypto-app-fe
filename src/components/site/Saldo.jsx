@@ -10,6 +10,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { NumericFormat } from 'react-number-format';
 
 const Saldo = () => {
 
@@ -41,7 +42,7 @@ const Saldo = () => {
     }, [cookies.session, show])
 
     const schema = yup.object({
-        jumlah: yup.number().required()
+        jumlah: yup.string().required()
     })
 
     const [submit, setSubmit] = useState(false);
@@ -67,9 +68,10 @@ const Saldo = () => {
                 },
             }
             const data = {
-                "jumlah": values.jumlah,
+                "jumlah": values.jumlah.split(',').join(''),
             }
             const url = "http://localhost:9100/saldo"
+            console.log(data)
             axios.post(url, data, config).then(response => {
                 // console.log(response)
                 if(response.data === 'success'){
@@ -89,7 +91,7 @@ const Saldo = () => {
             <Container className='mt-4'>
                 <Card>
                     <Card.Body>
-                        <h1>Rp {saldo}</h1>
+                        <h1>Rp <NumericFormat value={saldo} thousandSeparator="," displayType='text' /> </h1>
                         <Button className='mt-3' variant='primary' onClick={handleShow}>Top Up</Button>
                     </Card.Body>
                 </Card>
@@ -101,7 +103,7 @@ const Saldo = () => {
                     <Modal.Body>
                         <Form.Group className="mb-3">
                             <Form.Label>Jumlah Saldo</Form.Label>
-                            <Form.Control
+                            {/* <Form.Control
                                 type="text"
                                 name="jumlah"
                                 value={values.jumlah}
@@ -109,6 +111,17 @@ const Saldo = () => {
                                 onBlur={handleBlur}
                                 onSubmit={handleSubmit}
                                 isInvalid={!!errors.jumlah}
+                            /> */}
+                            <NumericFormat
+                                value={values.jumlah}
+                                name='jumlah'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                onSubmit={handleSubmit}
+                                isInvalid={!!errors.jumlah}
+                                customInput={Form.Control}
+                                thousandSeparator=','
+                                autoComplete='off'
                             />
                             <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
                         </Form.Group>
