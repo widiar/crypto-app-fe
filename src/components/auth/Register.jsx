@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
 
 
 const Register = () => {
@@ -51,9 +52,12 @@ const Register = () => {
             const url = "http://localhost:9100/auth/register"
             axios.post(url, data, config).then(response => {
                 console.log(response)
-                if (response.status === 200) {
+                if (response.data.status === 'success') {
                     navigate('/login', { replace: true, state: 'success_register' })
                 }
+            }).catch(error => {
+                toast.error(error.response.data.message)
+                setSubmit(false)
             })
         }
     })
@@ -130,6 +134,7 @@ const Register = () => {
                     <Link to={`/login`} className="mb-3">Login</Link>
                 </Card.Body>
             </Card>
+            <ToastContainer/>
         </Container>
     )
 }
