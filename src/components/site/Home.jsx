@@ -83,10 +83,12 @@ const Home = () => {
             const url = `http://localhost:9100/trade/buy/${crypto.id}`
             axios.post(url, data, config).then(response => {
                 // console.log(response)
-                if(response.data.status === 'success'){
+                if (response.data.status === 'success') {
                     toast.success("Berhasil beli crypto")
-                }else{
-                    toast.warning("Saldo tidak cukup")
+                } else {
+                    if (response.data.message === null)
+                        toast.warning("Saldo tidak cukup")
+                    else toast.error(response.data.message)
                 }
                 handleClose()
                 setSubmit(false)
@@ -135,37 +137,37 @@ const Home = () => {
                 </Row>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                    <Modal.Title>Beli Crytp {crypto == null ? '' :crypto.nama_crypto}</Modal.Title>
+                        <Modal.Title>Beli Crytp {crypto == null ? '' : crypto.nama_crypto}</Modal.Title>
                     </Modal.Header>
                     <Form method="POST" onSubmit={handleSubmit} noValidate>
-                    <Modal.Body>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Jumlah</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="jumlah"
-                                value={values.jumlah}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                onSubmit={handleSubmit}
-                                isInvalid={!!errors.jumlah}
+                        <Modal.Body>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Jumlah</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="jumlah"
+                                    value={values.jumlah}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    onSubmit={handleSubmit}
+                                    isInvalid={!!errors.jumlah}
                                 />
-                            <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
-                        </Form.Group>
-                        <h4>Total Saldo: Rp <NumericFormat value={saldo} thousandSeparator="," displayType='text' /></h4>
-                        <h4>Total Beli Rp <NumericFormat value={total} thousandSeparator="," displayType='text' /></h4>
-                    </Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button disabled={submit} variant="primary" type="submit">{submit ? (
-                            <><FontAwesomeIcon icon={faSpinner} className="fa-spin"></FontAwesomeIcon> Proses</>
-                        ) : 'Save'}</Button>
-                    </Modal.Footer>
+                                <Form.Control.Feedback type="invalid">{errors.jumlah}</Form.Control.Feedback>
+                            </Form.Group>
+                            <h4>Total Saldo: Rp <NumericFormat value={saldo} thousandSeparator="," displayType='text' /></h4>
+                            <h4>Total Beli Rp <NumericFormat value={total} thousandSeparator="," displayType='text' /></h4>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Close
+                            </Button>
+                            <Button disabled={submit} variant="primary" type="submit">{submit ? (
+                                <><FontAwesomeIcon icon={faSpinner} className="fa-spin"></FontAwesomeIcon> Proses</>
+                            ) : 'Save'}</Button>
+                        </Modal.Footer>
                     </Form>
                 </Modal>
-                <ToastContainer/>
+                <ToastContainer />
             </Container>
         </>
     )
