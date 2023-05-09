@@ -82,7 +82,7 @@ const Home = () => {
             }
             const url = `http://localhost:9100/trade/buy/${crypto.id}`
             axios.post(url, data, config).then(response => {
-                // console.log(response)
+                console.log(response)
                 if (response.data.status === 'success') {
                     toast.success("Berhasil beli crypto")
                 } else {
